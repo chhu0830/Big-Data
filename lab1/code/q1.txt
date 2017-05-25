@@ -1,0 +1,4 @@
+data <- read.csv('yellow_tripdata_2016-12.csv', sep=',')
+PULocationID <- data.frame(table(data$PULocationID))
+colnames(PULocationID) <- c('PULocationID', 'Sum')
+head(PULocationID[order(PULocationID$Sum, decreasing=T), ])

@@ -1,0 +1,36 @@
+pickup05¡Gplot(unlist(pick['pickup_longitude']), unlist(pick['pickup_latitude']), main='Pickup', xlim=c(-74.2, -73.8), ylim=c(40.6, 40.9), xlab='Pickup Longitude', ylab='Pickup Latitude')
+
+
+
+
+data.jan <- read.csv(file='data/yellow_tripdata_2016-01.csv', sep=',')
+data.jan.pick.time.matrix <- as.matrix(data.jan['tpep_pickup_datetime'])
+data.jan.pick.time.format <- format(as.POSIXct(data.jan.pick.time.matrix, format='%Y-%m-%d %H:%M:%S'), '%H')
+hist(as.numeric(data.jan.pick.time.format), main='Pickup Time', xlab='Hours of Day')
+
+
+
+drop.frame <- data.frame(data['dropoff_longitude'], data['dropoff_latitude'])
+drop.db <- fpc::dbscan(drop.frame, eps=0.15, MinPts=5)
+plot(drop.db, drop.frame, main='DBSCAN', frame=FALSE)
+
+
+
+
+data.db <- dbscan::dbscan(head(data.frame, 1000000), 0.001, minPts=500)
+plot(data.db, head(data.frame, 100000), frame=FALSE)
+
+data.kn <- kNN(head(data.frame, 10000), 100)
+
+data.jp <- jpclust(head(data.frame, 10000), 5, 1)
+
+data.km <- kmeans(head(data.frame, 100000), 10, nstart=25, algorithm='Lloyd', iter.max=100)
+fviz_cluster(data.km, head(data.frame, 100000), frame=FALSE, geom='point')
+
+
+
+data.frame <- data.frame[data.frame$dropoff_longitude > -74.1,]
+data.frame <- data.frame[data.frame$dropoff_longitude < -73.8,]
+data.frame <- data.frame[data.frame$dropoff_latitude > 40.6,]
+data.frame <- data.frame[data.frame$dropoff_latitude < 40.9,]
+data.db <- dbscan(data.frame, 0.002, MinPts=10000, scale=FALSE, method=c('raw'))
